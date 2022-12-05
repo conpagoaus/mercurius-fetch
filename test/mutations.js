@@ -295,3 +295,68 @@ test('mutations - should use the token in the context if present', async (t) => 
 
   t.same(JSON.parse(response.body), expectedMutationResponse)
 })
+
+test('mutations - should return the api response successful with url params', async (t) => {
+  t.plan(2)
+
+  const app = Fastify()
+  const user = 'user2'
+  const server = http.createServer((req, res) => {
+    t.equal(`/${user}`, req.url)
+
+    res.setHeader('Content-Type', 'application/json')
+    res.end(JSON.stringify(mockedRestResponse))
+  })
+  t.teardown(async () => {
+    await app.close()
+    await server.close()
+  })
+
+  server.listen()
+
+  const schema = `
+  directive @mutate(
+    url: String!
+    extractFromResponse: String
+  ) on OBJECT | FIELD_DEFINITION
+
+  type Response {
+    id: Int
+    code: String
+    name: String
+  }
+
+  type Query {
+      _dummy: String
+  }
+ 
+  type Mutation {
+     addInfo(user: String, date: String): Response @mutate(url:"http://localhost:${
+       server.address().port
+     }/$user", extractFromResponse:"data")
+  }`
+
+  app.register(mercurius, {
+    schema
+  })
+  app.register(mercuriusFetch)
+
+  const query = `mutation {
+    addInfo(user:"${user}", date:"${new Date()}") {
+      id
+      code
+      name
+    }
+  }`
+  const response = await app.inject({
+    method: 'POST',
+    headers: {
+      'content-type': 'application/json',
+      authorization: 'Bearer secretotken'
+    },
+    url: '/graphql',
+    payload: JSON.stringify({ query })
+  })
+
+  t.same(JSON.parse(response.body), expectedMutationResponse)
+})

@@ -77,7 +77,7 @@ test('basic - should return the api response successful', async (t) => {
   t.same(JSON.parse(response.body), expectedQueryResponse)
 })
 
-test('basic - should return the api response successful with params', async (t) => {
+test('basic - should return the api response successful with url params', async (t) => {
   t.plan(2)
 
   const app = Fastify()
