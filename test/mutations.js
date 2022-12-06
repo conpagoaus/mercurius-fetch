@@ -174,16 +174,11 @@ test('mutations - should transform the response', async (t) => {
       query: Query
       mutation: Mutation
     }
-
-    input KeyValue {
-      key: String
-      value: String
-    }
     
     directive @mutate(
       url: String!
       extractFromResponse: String
-      transformResponse: [KeyValue]
+      transformResponse: String
     ) on OBJECT | FIELD_DEFINITION
 
     type Response {
