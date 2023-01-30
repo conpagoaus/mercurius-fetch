@@ -103,6 +103,25 @@ app.register(mercuriusFetch)
 app.listen(3000)
 ```
 
+### URL Parameters
+
+The `url` option supports URL parameters in the following format:
+
+```
+ @mutate(url:"http://localhost:3000/info/$info_id"
+```
+OR
+
+```
+ @mutate(url:"http://localhost:3000/info/{info_id}"
+```
+
+and the values will have to be passed in the arguments like so:
+
+```
+addInfo(..., info_id: String):
+```
+
 ## License
 
 MIT
