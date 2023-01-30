@@ -110,6 +110,7 @@ The `url` option supports URL parameters in the following format:
 ```
  @mutate(url:"http://localhost:3000/info/$info_id"
 ```
+
 OR
 
 ```
@@ -121,6 +122,11 @@ and the values will have to be passed in the arguments like so:
 ```
 addInfo(..., info_id: String):
 ```
+
+### Propagating Authentication 
+
+If you pass an `auth_token` in the context, that will pass to the REST request as the `Authorization` header. 
+
 
 ## License
 
